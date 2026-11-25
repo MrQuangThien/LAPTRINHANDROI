@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RestaurantManagement.API.Data;
+using RestaurantManagement.API.Repositories;
 
 namespace RestaurantManagement.API.Controllers;
 
 [ApiController, Route("api/roles"), Authorize(Roles = "Admin")]
-public sealed class RoleController(RestaurantDbContext db) : ControllerBase
+public sealed class RoleController(IRoleRepository roles) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> List() => Ok(await db.Roles.AsNoTracking().OrderBy(x => x.Id)
-        .Select(x => new { x.Id, x.Name, x.Description }).ToListAsync());
+    public async Task<IActionResult> List() => Ok(await roles.ListAsync());
 }
